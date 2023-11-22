@@ -1,3 +1,3 @@
-/home/pasha/FirtsProgect/SomeShit/cmake-build-debug/CMakeFiles/SomeShit.dir
-/home/pasha/FirtsProgect/SomeShit/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/pasha/FirtsProgect/SomeShit/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/pasha/FirtsProject/cmake-build-debug/CMakeFiles/SomeShit.dir
+/home/pasha/FirtsProject/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/pasha/FirtsProject/cmake-build-debug/CMakeFiles/rebuild_cache.dir
