@@ -2,7 +2,6 @@
 #include <thread>
 #include <chrono>
 #include <conio.h>
-//#include <time.h>
 
 class Rocket {
 public:
@@ -44,38 +43,40 @@ public:
     Game() : height(0), width(0) {
     };
 
-    void printField(Ball &ball, Rocket &R1, Rocket &R2) {
+    void printField(Ball&ball, Rocket&R1, Rocket&R2) {
         system("clear");
         std::cout << "First player: " << score1 << "\tSecond player: " << score2 << "\n";
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (j == R1.nextXR1 && i == R1.nextYR1) {
-                    std::cout << "=";
-                } else if (j == R1.nextXR1 + 1 && i == R1.nextYR1) {
-                    std::cout << "=";
-                } else if (j == R1.nextXR1 - 1 && i == R1.nextYR1) {
-                    std::cout << "=";
-                } else if (j == R2.nextXR2 && i == R2.nextYR2) {
-                    std::cout << "=";
-                } else if (j == R2.nextXR2 + 1 && i == R2.nextYR2) {
-                    std::cout << "=";
-                } else if (j == R2.nextXR2 - 1 && i == R2.nextYR2) {
-                    std::cout << "=";
-                } else if (i == ball.nextY && j == ball.nextX)
-                    std::cout << "*";
-                else if (i == 0 || i == height - 1)
+                if (i == 0 || i == height - 1)
                     std::cout << "#";
+                else if (j == R1.nextXR1 && i == R1.nextYR1)
+                    std::cout << "=";
+                else if (j == R1.nextXR1 + 1 && i == R1.nextYR1)
+                    std::cout << "=";
+                else if (j == R1.nextXR1 - 1 && i == R1.nextYR1)
+                    std::cout << "=";
+                else if (j == R2.nextXR2 && i == R2.nextYR2)
+                    std::cout << "=";
+                else if (j == R2.nextXR2 + 1 && i == R2.nextYR2)
+                    std::cout << "=";
+                else if (j == R2.nextXR2 - 1 && i == R2.nextYR2)
+                    std::cout << "=";
+                else if (i == ball.nextY && j == ball.nextX)
+                    std::cout << "*";
+                else if (i == height / 2 && j != 0)
+                    std::cout << "-";
                 else if (j == 0 || j == width)
                     std::cout << "#";
                 else std::cout << " ";
             }
             std::cout << "#\n";
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
     }
 
-    void stepGame(Ball &ball) {
-        if (ball.nextY == 1) {
+    void stepGame(Ball&ball, Rocket&R1) {
+        if (ball.nextY == 1 || ball.nextY == R1.nextYR1) {
             ball.speedY *= -1;
         }
         if (ball.nextY == height - 2) {
@@ -91,7 +92,7 @@ public:
         ball.nextY += ball.speedY;
     }
 
-    int gameplay(Rocket &R1, Rocket &R2) {
+    int gameplay(Rocket&R1, Rocket&R2) {
         if (kbhit()) {
             char input1 = getch();
             switch (input1) {
@@ -124,47 +125,57 @@ public:
         return 0;
     }
 
-    int logic(Rocket &R1, Rocket &R2, Ball &ball) {
-        if (R1.nextYR1 == ball.nextY && R1.nextXR1 == ball.nextX) {
-            ball.nextY += 1;
-            ball.nextX -= 1;
+    int logic(Rocket&R1, Rocket&R2, Ball&ball) {
+        if (R1.nextYR1 == ball.nextY - 1 && R1.nextXR1 - 1 == ball.nextX && (
+                (ball.speedX == -1 && ball.speedY == -1) || (ball.speedX == 1 && ball.speedY == -1))) {
             ball.speedY *= -1;
-            if (ball.nextX == 0) {
-                ball.nextX += 1;
-            }
         }
-        if (R2.nextYR2 == ball.nextY && R2.nextXR2 == ball.nextX) {
-            ball.nextY -= 1;
-            ball.nextX += 1;
+        else if (R1.nextYR1 == ball.nextY - 1 && R1.nextXR1 + 1 == ball.nextX && (
+                     (ball.speedX == -1 && ball.speedY == -1) || (ball.speedX == 1 && ball.speedY == -1))) {
             ball.speedY *= -1;
-            if (ball.nextX == 0) {
-                ball.nextX -= 1;
-            }
         }
+        else if (R1.nextYR1 == ball.nextY - 1 && R1.nextXR1 == ball.nextX && (
+                     (ball.speedX == -1 && ball.speedY == -1) || (ball.speedX == 1 && ball.speedY == -1))) {
+        }
+        if (R2.nextYR2 == ball.nextY + 1 && R2.nextXR2 - 1 == ball.nextX && (
+                (ball.speedX == 1 && ball.speedY == 1) || (ball.speedX == -1 && ball.speedY == 1))) {
+            ball.speedY *= -1;
+        }
+        else if (R2.nextYR2 == ball.nextY + 1 && R2.nextXR2 + 1 == ball.nextX && (
+                     (ball.speedX == 1 && ball.speedY == 1) || (ball.speedX == -1 && ball.speedY == 1))) {
+            ball.speedY *= -1;
+        }
+        else if (R2.nextYR2 == ball.nextY + 1 && R2.nextXR2 == ball.nextX && (
+                     (ball.speedX == 1 && ball.speedY == 1) || (ball.speedX == -1 && ball.speedY == 1))) {
+        }
+
         return 0;
     }
 
-    void score(Ball &ball) {
+    void score(Ball&ball) {
         if (ball.nextY == 1) {
             score2 += 1;
-        } else if (ball.nextY == height - 2) {
+        }
+        else if (ball.nextY == height - 2) {
             score1 += 1;
-        } else if (score1 == 11) {
+        }
+        else if (score1 == 11) {
             game_over = true;
             std::cout << "First player wins\n";
-        } else if (score2 == 11) {
+        }
+        else if (score2 == 11) {
             game_over = true;
             std::cout << "Second player wins\n";
         }
     }
 };
 
-
 int main() {
     Ball ball;
     Rocket R1;
     Rocket R2;
-    Game game(11, 31);
+    Game game(19, 29);
+    //ball
     ball.startX = game.width / 2;
     ball.startY = game.height / 2;
     ball.nextX = ball.startX;
@@ -182,7 +193,7 @@ int main() {
     R2.nextYR2 = R2.startYR2;
     while (!game.game_over) {
         game.printField(ball, R1, R2);
-        game.stepGame(ball);
+        game.stepGame(ball, R1);
         game.gameplay(R1, R2);
         game.logic(R1, R2, ball);
         game.score(ball);
